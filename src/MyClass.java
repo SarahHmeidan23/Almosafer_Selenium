@@ -1,4 +1,5 @@
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Random;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -65,7 +66,7 @@ public class MyClass {
 		Assert.assertEquals(QitafLogo, true);
 	}
 
-	@Test(/*invocationCount = 2*/ )
+	@Test(/* invocationCount = 2 */ enabled = false)
 	public void ChangeLanguageRandomly() throws InterruptedException {
 
 		String[] myWebsites = { "https://global.almosafer.com/en", "https://global.almosafer.com/ar" };
@@ -99,6 +100,52 @@ public class MyClass {
 		}
 		driver.findElement(By.className("HotelSearchBox__SearchButton")).click();
 		Thread.sleep(2000);
+	}
+
+	@Test(enabled = false)
+	public void CheckTheDepartureDate() {
+
+		LocalDate TheDate = LocalDate.now();
+		int TheDay = TheDate.getDayOfMonth();
+		int Flight = TheDay + 1;
+		String Departure = driver
+				.findElement(By.cssSelector("div[class='sc-OxbzP sc-lnrBVv gKbptE'] span[class='sc-fvLVrH hNjEjT']"))
+				.getText();
+		int DepartureDate = Integer.valueOf(Departure);
+		Assert.assertEquals(Flight, DepartureDate);
+
+	}
+
+	@Test(enabled = false)
+	public void CheckTheReturnDate() {
+		LocalDate TheDate = LocalDate.now();
+		int TheDay = TheDate.getDayOfMonth();
+		int Flight = TheDay + 2;
+		String Return = driver
+				.findElement(By.cssSelector("div[class='sc-OxbzP sc-bYnzgO bojUIa'] span[class='sc-fvLVrH hNjEjT']"))
+				.getText();
+		int ReturnDate = Integer.valueOf(Return);
+		Assert.assertEquals(Flight, ReturnDate);
+	}
+
+	@Test()
+	public void RandomlySelectAdults() {
+		driver.findElement(By.id("uncontrolled-tab-example-tab-hotels")).click();
+		driver.findElement(By.xpath("//input[@placeholder='Search for hotels or places']")).sendKeys("Dubai");
+		driver.findElement(By.cssSelector(
+				".phbroq-5.dbvRBC.AutoComplete__ListItem.AutoComplete__ListItem--highlighted.AutoComplete__ListItem"))
+				.click();
+		driver.findElement(By.cssSelector(".tln3e3-1.eFsRGb")).click();
+		WebElement option1 = driver.findElement(By.cssSelector("option[value='A']"));
+		WebElement option2 = driver.findElement(By.cssSelector("option[value='B']"));
+		Random rand = new Random();
+		boolean RandomOptions = rand.nextBoolean();
+		if (RandomOptions) {
+			option1.click();
+		} else {
+			option2.click();
+		}
+		driver.findElement(By.className("HotelSearchBox__SearchButton")).click();
 	}
 
 	@AfterTest
