@@ -7,8 +7,7 @@
         <methods>
           <include name="Post"/>
           <include name="mySetup"/>
-          <include name="CheckTheReturnDate"/>
-          <include name="CheckTheDepartureDate"/>
+          <include name="ChangeLanguageRandomly"/>
         </methods>
       </class> <!-- MyClass -->
     </classes>

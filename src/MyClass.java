@@ -9,8 +9,10 @@ import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 public class MyClass {
+	SoftAssert myAssertion = new SoftAssert();
 	String myWebsite = "https://global.almosafer.com/en";
 	WebDriver driver = new ChromeDriver();
 
@@ -27,10 +29,9 @@ public class MyClass {
 	@Test(enabled = false)
 
 	public void CheckTheLanguage() {
-
 		WebElement Language = driver.findElement(By.tagName("html"));
 		String LangOfWebsite = Language.getAttribute("lang");
-		Assert.assertEquals(LangOfWebsite, "en");
+		Assert.assertEquals(LangOfWebsite, "en", "This is to check the language");
 
 	}
 
@@ -39,7 +40,7 @@ public class MyClass {
 		WebElement Currency = driver.findElement(By.xpath("//button[normalize-space()='SAR']"));
 		String ActualCurrency = Currency.getText();
 		String ExpectedCurrency = "SAR";
-		Assert.assertEquals(ActualCurrency, ExpectedCurrency);
+		Assert.assertEquals(ActualCurrency, ExpectedCurrency, "This is to Check the currency");
 
 	}
 
@@ -48,7 +49,7 @@ public class MyClass {
 		WebElement ContactNumber = driver.findElement(By.cssSelector("a[class='sc-hUfwpO bWcsTG'] strong"));
 		String ActualContactNum = ContactNumber.getText();
 		String ExpectedContactNum = "+966554400000";
-		Assert.assertEquals(ActualContactNum, ExpectedContactNum);
+		Assert.assertEquals(ActualContactNum, ExpectedContactNum, "This is to Check the contact number");
 	}
 
 	@Test(enabled = false)
@@ -56,19 +57,18 @@ public class MyClass {
 
 		WebElement HotelsButtons = driver.findElement(By.id("uncontrolled-tab-example-tab-hotels"));
 		String HotelsTab = HotelsButtons.getAttribute("aria-selected");
-		Assert.assertEquals(HotelsTab, "false");
+		Assert.assertEquals(HotelsTab, "false", "This is to make sure the Hotels tab is not selected");
 	}
 
 	@Test(enabled = false)
 	public void CheckTheQitafLogo() {
 		WebElement Footer = driver.findElement(By.tagName("footer"));
 		boolean QitafLogo = Footer.findElement(By.xpath("//div[@class='sc-dznXNo iZejAw']")).isDisplayed();
-		Assert.assertEquals(QitafLogo, true);
+		Assert.assertEquals(QitafLogo, true, "That's to make sure the logo exists");
 	}
 
-	@Test(/* invocationCount = 2 */ enabled = false)
-	public void ChangeLanguageRandomly() throws InterruptedException {
-
+	@Test(/* invocationCount = 2 */enabled = false)
+	public void ChangeLanguageRandomly() {
 		String[] myWebsites = { "https://global.almosafer.com/en", "https://global.almosafer.com/ar" };
 		String[] ArabicOptions = { "جدة", "دبي" };
 		String[] EnglishOptions = { "Dubai", "Jeddah", "Riyadh" };
@@ -87,6 +87,15 @@ public class MyClass {
 			driver.findElement(By.cssSelector(
 					".phbroq-5.kORbYL.AutoComplete__ListItem.AutoComplete__ListItem--highlighted.AutoComplete__ListItem"))
 					.click();
+			driver.findElement(By.cssSelector(".tln3e3-1.eFsRGb")).click();
+			WebElement option1 = driver.findElement(By.cssSelector("option[value='A']"));
+			WebElement option2 = driver.findElement(By.cssSelector("option[value='B']"));
+			boolean RandomOptions = rand.nextBoolean();
+			if (RandomOptions) {
+				option1.click();
+			} else {
+				option2.click();
+			}
 			driver.findElement(By.cssSelector(
 					".sc-jTzLTM.eJkYKb.sc-1vkdpp9-6.iKBWgG.js-HotelSearchBox__SearchButton.btn.btn-primary.btn-block"))
 					.click();
@@ -97,55 +106,36 @@ public class MyClass {
 			driver.findElement(By.cssSelector(
 					".phbroq-5.dbvRBC.AutoComplete__ListItem.AutoComplete__ListItem--highlighted.AutoComplete__ListItem"))
 					.click();
+			driver.findElement(By.cssSelector(".tln3e3-1.eFsRGb")).click();
+			WebElement option1 = driver.findElement(By.cssSelector("option[value='A']"));
+			WebElement option2 = driver.findElement(By.cssSelector("option[value='B']"));
+			boolean RandomOptions = rand.nextBoolean();
+			if (RandomOptions) {
+				option1.click();
+			} else {
+				option2.click();
+			}
 		}
 		driver.findElement(By.className("HotelSearchBox__SearchButton")).click();
-		Thread.sleep(2000);
 	}
 
 	@Test(enabled = false)
-	public void CheckTheDepartureDate() {
+	public void CheckTheDepartureAndReturnDate() {
 
 		LocalDate TheDate = LocalDate.now();
-		int TheDay = TheDate.getDayOfMonth();
-		int Flight = TheDay + 1;
-		String Departure = driver
+		int ExpectedDeparture = TheDate.plusDays(1).getDayOfMonth();
+		int ExpectedReturn = TheDate.plusDays(2).getDayOfMonth();
+		String ActualDeparture = driver
 				.findElement(By.cssSelector("div[class='sc-OxbzP sc-lnrBVv gKbptE'] span[class='sc-fvLVrH hNjEjT']"))
 				.getText();
-		int DepartureDate = Integer.valueOf(Departure);
-		Assert.assertEquals(Flight, DepartureDate);
-
-	}
-
-	@Test(enabled = false)
-	public void CheckTheReturnDate() {
-		LocalDate TheDate = LocalDate.now();
-		int TheDay = TheDate.getDayOfMonth();
-		int Flight = TheDay + 2;
-		String Return = driver
+		String ActualReturn = driver
 				.findElement(By.cssSelector("div[class='sc-OxbzP sc-bYnzgO bojUIa'] span[class='sc-fvLVrH hNjEjT']"))
 				.getText();
-		int ReturnDate = Integer.valueOf(Return);
-		Assert.assertEquals(Flight, ReturnDate);
-	}
 
-	@Test()
-	public void RandomlySelectAdults() {
-		driver.findElement(By.id("uncontrolled-tab-example-tab-hotels")).click();
-		driver.findElement(By.xpath("//input[@placeholder='Search for hotels or places']")).sendKeys("Dubai");
-		driver.findElement(By.cssSelector(
-				".phbroq-5.dbvRBC.AutoComplete__ListItem.AutoComplete__ListItem--highlighted.AutoComplete__ListItem"))
-				.click();
-		driver.findElement(By.cssSelector(".tln3e3-1.eFsRGb")).click();
-		WebElement option1 = driver.findElement(By.cssSelector("option[value='A']"));
-		WebElement option2 = driver.findElement(By.cssSelector("option[value='B']"));
-		Random rand = new Random();
-		boolean RandomOptions = rand.nextBoolean();
-		if (RandomOptions) {
-			option1.click();
-		} else {
-			option2.click();
-		}
-		driver.findElement(By.className("HotelSearchBox__SearchButton")).click();
+		myAssertion.assertEquals(Integer.parseInt(ActualDeparture), ExpectedDeparture,
+				"This is to Test The Departure Date");
+		myAssertion.assertEquals(Integer.parseInt(ActualReturn), ExpectedReturn, "This is to Test The Return Date");
+		myAssertion.assertAll();
 	}
 
 	@AfterTest
