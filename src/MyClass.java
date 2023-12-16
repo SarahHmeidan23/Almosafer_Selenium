@@ -67,8 +67,27 @@ public class MyClass {
 		Assert.assertEquals(QitafLogo, true, "That's to make sure the logo exists");
 	}
 
-	@Test(/* invocationCount = 2 */enabled = false)
-	public void ChangeLanguageRandomly() {
+	@Test(enabled = false)
+	public void CheckTheDepartureAndReturnDate() {
+
+		LocalDate TheDate = LocalDate.now();
+		int ExpectedDeparture = TheDate.plusDays(1).getDayOfMonth();
+		int ExpectedReturn = TheDate.plusDays(2).getDayOfMonth();
+		String ActualDeparture = driver
+				.findElement(By.cssSelector("div[class='sc-OxbzP sc-lnrBVv gKbptE'] span[class='sc-fvLVrH hNjEjT']"))
+				.getText();
+		String ActualReturn = driver
+				.findElement(By.cssSelector("div[class='sc-OxbzP sc-bYnzgO bojUIa'] span[class='sc-fvLVrH hNjEjT']"))
+				.getText();
+
+		myAssertion.assertEquals(Integer.parseInt(ActualDeparture), ExpectedDeparture,
+				"This is to Test The Departure Date");
+		myAssertion.assertEquals(Integer.parseInt(ActualReturn), ExpectedReturn, "This is to Test The Return Date");
+		myAssertion.assertAll();
+	}
+
+	@Test(/* invocationCount = 2 */)
+	public void ChangeLanguageRandomly() throws InterruptedException {
 		String[] myWebsites = { "https://global.almosafer.com/en", "https://global.almosafer.com/ar" };
 		String[] ArabicOptions = { "جدة", "دبي" };
 		String[] EnglishOptions = { "Dubai", "Jeddah", "Riyadh" };
@@ -99,6 +118,10 @@ public class MyClass {
 			driver.findElement(By.cssSelector(
 					".sc-jTzLTM.eJkYKb.sc-1vkdpp9-6.iKBWgG.js-HotelSearchBox__SearchButton.btn.btn-primary.btn-block"))
 					.click();
+			Thread.sleep(10000);
+			String resultsFound = driver
+					.findElement(By.xpath("//span[@data-testid='HotelSearchResult__resultsFoundCount']")).getText();
+			Assert.assertEquals(resultsFound.contains("وجدنا"), true);
 		} else if (myWebsiteURL.contains("en")) {
 			WebElement SearchEnglish = driver
 					.findElement(By.cssSelector("input[placeholder='Search for hotels or places']"));
@@ -115,27 +138,14 @@ public class MyClass {
 			} else {
 				option2.click();
 			}
+			driver.findElement(By.xpath("//button[@data-testid='HotelSearchBox__SearchButton']")).click();
+
+			Thread.sleep(10000);
+			String resultsFound = driver
+					.findElement(By.xpath("//span[@data-testid='HotelSearchResult__resultsFoundCount']")).getText();
+			Assert.assertEquals(resultsFound.contains("found"), true);
+
 		}
-		driver.findElement(By.className("HotelSearchBox__SearchButton")).click();
-	}
-
-	@Test(enabled = false)
-	public void CheckTheDepartureAndReturnDate() {
-
-		LocalDate TheDate = LocalDate.now();
-		int ExpectedDeparture = TheDate.plusDays(1).getDayOfMonth();
-		int ExpectedReturn = TheDate.plusDays(2).getDayOfMonth();
-		String ActualDeparture = driver
-				.findElement(By.cssSelector("div[class='sc-OxbzP sc-lnrBVv gKbptE'] span[class='sc-fvLVrH hNjEjT']"))
-				.getText();
-		String ActualReturn = driver
-				.findElement(By.cssSelector("div[class='sc-OxbzP sc-bYnzgO bojUIa'] span[class='sc-fvLVrH hNjEjT']"))
-				.getText();
-
-		myAssertion.assertEquals(Integer.parseInt(ActualDeparture), ExpectedDeparture,
-				"This is to Test The Departure Date");
-		myAssertion.assertEquals(Integer.parseInt(ActualReturn), ExpectedReturn, "This is to Test The Return Date");
-		myAssertion.assertAll();
 	}
 
 	@AfterTest
