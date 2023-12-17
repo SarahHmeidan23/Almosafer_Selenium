@@ -86,8 +86,27 @@ public class MyClass {
 		myAssertion.assertAll();
 	}
 
-	@Test(/* invocationCount = 2 */)
-	public void ChangeLanguageRandomly() throws InterruptedException {
+	@Test(enabled= false)
+	public void ChangeLanguageRandomly() {
+		String[] myWebsites = { "https://global.almosafer.com/en", "https://global.almosafer.com/ar" };
+		Random rand = new Random();
+		int RandomNumber = rand.nextInt(myWebsites.length);
+		driver.get(myWebsites[RandomNumber]);
+		String myWebsiteURL = driver.getCurrentUrl();
+		if (myWebsiteURL.contains("ar")) {
+			String ActualLanguage = driver.findElement(By.tagName("html")).getAttribute("lang");
+
+			Assert.assertEquals(ActualLanguage, "ar", "this is to test the langauge");
+		}else if (myWebsiteURL.contains("en")) {
+
+			String ActualLanguage = driver.findElement(By.tagName("html")).getAttribute("lang");
+			Assert.assertEquals(ActualLanguage, "en", "this is to test the langauge");
+
+		}
+		
+	}
+	@Test(/* invocationCount = 2 */ )
+	public void HotelSwitch() throws InterruptedException {
 		String[] myWebsites = { "https://global.almosafer.com/en", "https://global.almosafer.com/ar" };
 		String[] ArabicOptions = { "جدة", "دبي" };
 		String[] EnglishOptions = { "Dubai", "Jeddah", "Riyadh" };
